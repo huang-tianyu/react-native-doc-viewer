@@ -273,12 +273,16 @@ public class RNReactNativeDocViewerModule extends ReactContextBaseJavaModule {
         String mimeType = null;
         System.out.println("Url: " + url);
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension == null) {
+            extension = url.substring(url.lastIndexOf(".") + 1, url.length()).toLowerCase();
+        } 
+      
         if (extension != null) {
             mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
 
         if (mimeType == null) {
-            mimeType = "application/pdf";
+            mimeType = "*/*";
             System.out.println("Mime Type (default): " + mimeType);
         }
 
@@ -325,8 +329,8 @@ public class RNReactNativeDocViewerModule extends ReactContextBaseJavaModule {
             Context context = getCurrentActivity();
            String mimeType;
             // mime type of file data
-            if (fileName != null && fileType != null) {
-               mimeType = getMimeType(fileName + "." +fileType);
+            if (fileName != null && fileType != null && !fileType.equals("")) {
+               mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileType);
             } else {
               mimeType = getMimeType(url);
             }
@@ -360,8 +364,9 @@ public class RNReactNativeDocViewerModule extends ReactContextBaseJavaModule {
         private void activityNotFoundMessage(String message) {
             System.out.println("ERROR");
             System.out.println(message);
-            callback.invoke(message);
+            //callback.invoke(message);
             //e.printStackTrace();
+            Toast.makeText(reactContext, "未找到相关软件", Toast.LENGTH_SHORT).show();
         }
     }
 }
